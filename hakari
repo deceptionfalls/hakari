@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+# dice roller for the restless gambler
+import argparse
+import random
+import os
+import sys
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-r", "--rolls", default=1, type=int, required=False, help="Amount of rolls to be performed, defaults to 1")
+parser.add_argument("-d", "--dice", default=2, type=int, required=False, help="Dice type, defaults to a d2")
+parser.add_argument("-l", "--label", default="Result", type=str, required=False, help="Optional label for rolls")
+
+a = parser.parse_args()
+
+def roll():
+    sum = 0 # sum of numbers rolled
+    results = [] # all numbers rolled
+
+    for _ in range(a.rolls):
+        dice = random.randrange(1, a.dice + 1)
+        sum += dice # update sum
+        results.append(dice)
+
+    random.shuffle(results)
+
+    if "NO_COLOR" in os.environ or not sys.stdout.isatty():
+        print(f"{a.label}: {a.rolls}d{a.dice} {results}")
+        print(f"Total: {sum}")
+    else:
+        print(f"\033[1m{a.label}\033[0m: {a.rolls}d{a.dice} \033[1m{results}\033[0m")
+        print(f"\033[1mTotal\033[0m: {sum}")
+
+if __name__ == "__main__":
+    roll()
